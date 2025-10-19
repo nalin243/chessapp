@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- When checked (Amber Theme) -->
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#D4A056"
+            android:endColor="#A9712C"
+            android:angle="90"/>
+            <corners android:radius="20dp" />
+            <stroke android:width="2dp" android:color="#FFD700" />
+            <padding android:left="10dp" android:right="10dp" android:top="5dp" android:bottom="5dp"/>
+        </shape>
+    </item>
+
+    <!-- When not checked (Mystic Theme) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#1F3A40"
+            android:endColor="#0A1A1F"
+            android:angle="90"/>
+            <corners android:radius="20dp" />
+            <stroke android:width="2dp" android:color="#00FFFF" />
+            <padding android:left="10dp" android:right="10dp" android:top="5dp" android:bottom="5dp"/>
+        </shape>
+    </item>
+
+</selector>

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">chessapp</string>
+
+    <string name="rules_title">Rules &amp; Regulations</string>
+    <string name="rules_intro">Chess is a two-player strategy board game played on an 8×8 grid. The goal is to checkmate the opponent’s king while protecting your own. The following are the official rules and beginner-friendly tips to help you play effectively.</string>
+    <string name="rules_header">Basic Rules of Chess:</string>
+    <string name="rules_text">1. The game is played between two players, White and Black.\n\n2. Each player starts with 16 pieces: 1 King, 1 Queen, 2 Rooks, 2 Bishops, 2 Knights, and 8 Pawns.\n\n3. White always moves first. Players alternate turns.\n\n4. Each piece moves in a specific pattern (e.g., Bishops diagonally, Rooks straight, Knights in L-shape).\n\n5. The King is the most important piece. If the King is under direct attack (\'check\'), it must move out of danger.\n\n6. The game ends when a player’s King is in \'checkmate\' — unable to escape capture.\n\n7. A draw can occur if neither player can force checkmate or if both agree.\n\n8. Pawns can promote to any piece (except King) upon reaching the farthest rank.\n\n9. Castling is a special move between King and Rook that improves defense.\n\n10. \'En passant\' is a special pawn capture rule that occurs immediately after an opponent’s double pawn move.</string>
+    <string name="tips_header">Tips for Beginners:</string>
+    <string name="tips_text">1. Control the center of the board to gain more mobility.\n\n2. Develop your knights and bishops early for better control.\n\n3. Keep your King safe by castling early.\n\n4. Avoid moving the same piece multiple times in the opening.\n\n5. Always think one step ahead — anticipate your opponent’s move.</string>
+    <string name="exit">Exit</string>
 </resources>
