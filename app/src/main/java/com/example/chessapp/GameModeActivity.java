@@ -17,7 +17,6 @@ import androidx.appcompat.widget.Toolbar;
 
 public class GameModeActivity extends AppCompatActivity {
 
-    // --- ADD THIS VARIABLE ---
     Toolbar toolbar;
 
     @Override

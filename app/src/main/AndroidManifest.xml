@@ -36,8 +36,9 @@
             android:exported="true"
             android:theme="@style/Theme.Chessapp" />
         <activity
-            android:name=".ThemeSelectorActivity"
-            android:exported="false"/>
+            android:name=".LeaderboardActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme_Mystic" />
     </application>
 
 </manifest>

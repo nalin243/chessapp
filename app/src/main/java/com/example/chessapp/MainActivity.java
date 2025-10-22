@@ -19,17 +19,17 @@ public class MainActivity extends AppCompatActivity {
         Button btnRules = findViewById(R.id.btnRules);
         Button btnAbout = findViewById(R.id.btnAbout);
 
-        // PLAY -> open UserRegistrationActivity (so user can enter names before Board)
+        // PLAY -> open UserRegistrationActivity
         btnPlay.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, GameModeActivity.class))
         );
 
-        // LEADERBOARD -> open leaderboard activity if exists
-        // btnLeaderboard.setOnClickListener(v -> {
-        //     startActivity(new Intent(MainActivity.this, LeaderboardActivity.class));
-        // });
+        // LEADERBOARD
+        btnLeaderboard.setOnClickListener(v ->
+             startActivity(new Intent(MainActivity.this, LeaderboardActivity.class))
+        );
 
-        // RULES -> open RulesActivity
+        // RULES
         btnRules.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, RulesActivity.class))
         );

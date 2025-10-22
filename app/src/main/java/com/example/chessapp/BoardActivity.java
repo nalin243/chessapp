@@ -9,10 +9,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,34 +29,77 @@ public class BoardActivity extends AppCompatActivity {
     private Map<String, Integer> initialPieces;
     private String currentTheme;
 
+    public String gridIndexToChessSquare(int row, int col) {
+        char file = (char) ('a' + col);       // a–h
+        int rank = 8 - row;                   // 8–1 (top to bottom)
+        return "" + file + rank;
+    }
+
+    private void handleCellClick(ImageView clickedCell) {
+        //handler function to move the pieces
+        if (selectedCell == null) {
+            // First click — select a piece only if the cell has one
+            if (clickedCell.getDrawable() != null) {
+                selectedCell = clickedCell;
+                selectedCell.setColorFilter(0x7700FF00); // green highlight
+            }
+        } else {
+            // Second click — either move or cancel selection
+            if (clickedCell == selectedCell) {
+                // Deselect
+                selectedCell.clearColorFilter();
+                selectedCell = null;
+            } else {
+                // Move piece to the new cell
+                Drawable pieceToMove = selectedCell.getDrawable();
+                selectedCell.setImageDrawable(null);
+                selectedCell.clearColorFilter();
+                clickedCell.setImageDrawable(pieceToMove);
+                selectedCell = null;
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeHelper.applyTheme(this); // Apply saved theme
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_board);
 
+        // Insets setup (from original code)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        // Toolbar setup
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Chess Board");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        TextView toolbarTitle = findViewById(R.id.toolbar_title);
+        toolbarTitle.setText("CHESSBOARD");
 
-        // Load saved theme
+        // Load theme preference
         currentTheme = getSharedPreferences("theme_pref", MODE_PRIVATE)
                 .getString("selected_theme", "default");
 
-        chessboard = findViewById(R.id.chessboard);
-        initializePieces();
-
-        // Draw board after layout is ready
-        chessboard.post(() -> drawChessBoard(currentTheme));
-    }
-
-    private void initializePieces() {
         initialPieces = new HashMap<>();
 
-        // White pawns
-        for (int i = 0; i < 8; i++) initialPieces.put("6_" + i, R.drawable.white_pawn);
+        // White pawns row 6
+        initialPieces.put("6_0", R.drawable.white_pawn);
+        initialPieces.put("6_1", R.drawable.white_pawn);
+        initialPieces.put("6_2", R.drawable.white_pawn);
+        initialPieces.put("6_3", R.drawable.white_pawn);
+        initialPieces.put("6_4", R.drawable.white_pawn);
+        initialPieces.put("6_5", R.drawable.white_pawn);
+        initialPieces.put("6_6", R.drawable.white_pawn);
+        initialPieces.put("6_7", R.drawable.white_pawn);
 
-        // White major pieces
+        // White major pieces row 7
         initialPieces.put("7_0", R.drawable.white_rook);
         initialPieces.put("7_1", R.drawable.white_knight);
         initialPieces.put("7_2", R.drawable.white_bishop);
@@ -61,10 +109,17 @@ public class BoardActivity extends AppCompatActivity {
         initialPieces.put("7_6", R.drawable.white_knight);
         initialPieces.put("7_7", R.drawable.white_rook);
 
-        // Black pawns
-        for (int i = 0; i < 8; i++) initialPieces.put("1_" + i, R.drawable.black_pawn);
+        // Black pawns row 1
+        initialPieces.put("1_0", R.drawable.black_pawn);
+        initialPieces.put("1_1", R.drawable.black_pawn);
+        initialPieces.put("1_2", R.drawable.black_pawn);
+        initialPieces.put("1_3", R.drawable.black_pawn);
+        initialPieces.put("1_4", R.drawable.black_pawn);
+        initialPieces.put("1_5", R.drawable.black_pawn);
+        initialPieces.put("1_6", R.drawable.black_pawn);
+        initialPieces.put("1_7", R.drawable.black_pawn);
 
-        // Black major pieces
+        // Black major pieces row 0
         initialPieces.put("0_0", R.drawable.black_rook);
         initialPieces.put("0_1", R.drawable.black_knight);
         initialPieces.put("0_2", R.drawable.black_bishop);
@@ -73,68 +128,69 @@ public class BoardActivity extends AppCompatActivity {
         initialPieces.put("0_5", R.drawable.black_bishop);
         initialPieces.put("0_6", R.drawable.black_knight);
         initialPieces.put("0_7", R.drawable.black_rook);
-    }
 
-    private void drawChessBoard(String theme) {
-        chessboard.removeAllViews();
-        int size = chessboard.getWidth() / 8;
+        chessboard = findViewById(R.id.chessboard);
+        chessboard.post(new Runnable() { // using this as width is not immediately available in onCreate
+            @Override
+            public void run() {
+                int widthInPixels = chessboard.getWidth();
+                int tileSize = widthInPixels / 8;
 
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                boolean isWhite = (row + col) % 2 == 0;
+                int counter = 0;
 
-                GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                params.width = size;
-                params.height = size;
-                params.rowSpec = GridLayout.spec(row);
-                params.columnSpec = GridLayout.spec(col);
+                for (int row = 0; row < 8; row++) {
+                    for (int col = 0; col < 8; col++) {
+                        final int index = counter;
 
-                ImageView square = new ImageView(this);
-                square.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                square.setAdjustViewBounds(true);
+                        boolean isWhite = (row + col) % 2 == 0;
 
-                if ("amber".equalsIgnoreCase(theme)) {
-                    // Amber Classic Theme (balanced warm contrast)
-                    square.setBackgroundColor(isWhite
-                            ? Color.parseColor("#E5C29F")   // light amber
-                            : Color.parseColor("#8B5A2B")); // dark bronze brown
-                } else {
-                    // Mystic Silver Theme (cool modern tone)
-                    square.setBackgroundColor(isWhite
-                            ? Color.parseColor("#3C4A53")   // smoky slate
-                            : Color.parseColor("#1F262B")); // deep metallic gray
+                        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                        params.width = tileSize;
+                        params.height = tileSize;
+                        params.rowSpec = GridLayout.spec(row);
+                        params.columnSpec = GridLayout.spec(col);
+
+                        ImageView emptyview = new ImageView(getApplicationContext());
+                        emptyview.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                        emptyview.setAdjustViewBounds(true);
+
+                        // Apply current theme to the square colors
+                        if ("amber".equalsIgnoreCase(currentTheme)) {
+                            emptyview.setBackgroundColor(isWhite
+                                    ? Color.parseColor("#E5C29F")   // light amber
+                                    : Color.parseColor("#8B5A2B")); // dark bronze
+                        } else {
+                            emptyview.setBackgroundColor(isWhite
+                                    ? Color.parseColor("#3C4A53")   // smoky silver
+                                    : Color.parseColor("#1F262B")); // deep gray
+                        }
+
+                        emptyview.setImageDrawable(null);
+                        emptyview.setOnClickListener(v -> handleCellClick((ImageView) v));
+                        chessboard.addView(emptyview, params);
+
+                        String key = row + "_" + col;
+                        Integer pieceDrawableId = initialPieces.get(key);
+                        if (pieceDrawableId != null) {
+                            // adding the pieces
+                            ImageView pieceImage = new ImageView(getApplicationContext());
+                            pieceImage.setImageResource(pieceDrawableId);
+                            pieceImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+                            GridLayout.LayoutParams pieceParams = new GridLayout.LayoutParams();
+                            pieceParams.width = tileSize;
+                            pieceParams.height = tileSize;
+                            pieceParams.rowSpec = GridLayout.spec(row);
+                            pieceParams.columnSpec = GridLayout.spec(col);
+
+                            pieceImage.setOnClickListener(v -> handleCellClick((ImageView) v));
+                            chessboard.addView(pieceImage, pieceParams);
+                            counter++;
+                        }
+                    }
                 }
-
-                String key = row + "_" + col;
-                Integer pieceDrawableId = initialPieces.get(key);
-                if (pieceDrawableId != null) {
-                    square.setImageResource(pieceDrawableId);
-                }
-
-                square.setOnClickListener(v -> handleCellClick((ImageView) v));
-                chessboard.addView(square, params);
             }
-        }
-    }
-
-    private void handleCellClick(ImageView clickedCell) {
-        if (selectedCell == null) {
-            if (clickedCell.getDrawable() != null) {
-                selectedCell = clickedCell;
-                selectedCell.setColorFilter(0x7700FF00); // highlight green
-            }
-        } else {
-            if (clickedCell == selectedCell) {
-                selectedCell.clearColorFilter();
-                selectedCell = null;
-            } else {
-                Drawable pieceToMove = selectedCell.getDrawable();
-                selectedCell.setImageDrawable(null);
-                selectedCell.clearColorFilter();
-                clickedCell.setImageDrawable(pieceToMove);
-                selectedCell = null;
-            }
-        }
+        });
     }
 
     @Override
@@ -155,28 +211,16 @@ public class BoardActivity extends AppCompatActivity {
         themeToggle.setPadding(16, 8, 16, 8);
         themeToggle.setBackgroundResource(R.drawable.toggle_button_style);
         themeToggle.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-        // subtle shadow for text
         themeToggle.setShadowLayer(4, 2, 2, Color.BLACK);
 
-        // animation on change
+        toggleItem.setActionView(themeToggle);
+
         themeToggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
             buttonView.animate().rotationYBy(360).setDuration(600).start();
             currentTheme = isChecked ? "amber" : "mystic";
             ThemeHelper.setTheme(this, currentTheme);
-            drawChessBoard(currentTheme);
+            recreate(); // reapply UI theme instantly
         });
-
-        toggleItem.setActionView(themeToggle);
-
-
-        themeToggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            currentTheme = isChecked ? "amber" : "mystic";
-            ThemeHelper.setTheme(this, currentTheme);
-            drawChessBoard(currentTheme);
-        });
-
-
 
         return true;
     }
@@ -189,11 +233,9 @@ public class BoardActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
             finish();
             return true;
-
         } else if (id == R.id.action_rules) {
             startActivity(new Intent(this, RulesActivity.class));
             return true;
-
         } else if (id == R.id.action_exit) {
             finishAffinity();
             return true;

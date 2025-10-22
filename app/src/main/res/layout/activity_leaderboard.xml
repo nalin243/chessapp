@@ -2,19 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/leaderboard_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/mandala_bg"
-    tools:context=".BoardActivity">
+    tools:context=".LeaderboardActivity">
 
-    <!-- Semi-transparent dark overlay -->
+    <!-- Semi-transparent overlay -->
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#66000000" />
 
-    <!-- Toolbar at top -->
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -27,27 +27,32 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <TextView
-            android:id="@+id/toolbar_title"
+            android:id="@+id/toolbar_title_leaderboard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="CHESSBOARD"
+            android:text="LEADERBOARD"
             android:textColor="#FFD700"
             android:textSize="20sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium" />
+
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Centered Chessboard -->
-    <GridLayout
-        android:id="@+id/chessboard"
-        android:layout_width="360dp"
-        android:layout_height="360dp"
-        android:columnCount="8"
-        android:rowCount="8"
-        android:padding="4dp"
-        android:layout_centerInParent="true"
-        android:layout_margin="16dp"
-        android:background="@android:color/transparent" />
+    <!-- Scrollable leaderboard content -->
+    <ScrollView
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:id="@+id/leaderboardContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal" />
+
+    </ScrollView>
 
 </RelativeLayout>
