@@ -25,4 +25,36 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="PopupMenuStyle.Mystic" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">#00222B</item> <!-- Deep teal -->
+        <item name="android:textColor">#FFD700</item> <!-- Gold text -->
+    </style>
+
+    <!-- Mystic Theme -->
+    <style name="AppTheme_Mystic" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#00222B</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:textColor">#FFD700</item> <!-- gold -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <!-- Apply popup menu style -->
+        <item name="popupMenuStyle">@style/PopupMenuStyle.Mystic</item>
+    </style>
+
+    <!-- Amber Theme -->
+    <style name="AppTheme_Amber" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#8B5A2B</item>
+        <item name="android:windowBackground">@color/wood_light_square</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <!-- Match amber aesthetic -->
+        <item name="popupMenuStyle">@style/PopupMenuStyle.Amber</item>
+    </style>
+    <style name="PopupMenuStyle.Amber" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">#A9712C</item> <!-- amber brown -->
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
 </resources>

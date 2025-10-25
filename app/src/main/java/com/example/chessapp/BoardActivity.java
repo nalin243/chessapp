@@ -25,7 +25,7 @@ public class BoardActivity extends AppCompatActivity {
 
     private GridLayout chessboard;
     private ImageView selectedCell = null;
-//    private Map<String, Integer> initialPieces;
+    //    private Map<String, Integer> initialPieces;
     private Board board;
     private Square selectedSquare = Square.NONE;
 

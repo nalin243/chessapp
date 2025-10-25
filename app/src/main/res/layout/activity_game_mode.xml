@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/mandala_bg"
+    tools:context=".GameModeActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="#33000000"
+        android:layout_marginTop="25dp"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/PopupMenuStyle.Mystic"
+
+        app:navigationIcon="@drawable/ic_chess_icon">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Game Mode"
+            android:textColor="#FFC107"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="32dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="#A0000000">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Game Mode"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="40dp"/>
+
+        <Button
+            android:id="@+id/btnPlayComputer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Play with Computer"
+            android:layout_marginBottom="16dp"
+            android:textSize="18sp"
+            android:backgroundTint="#0E6D97"
+            android:textColor="@android:color/white"/>
+
+        <Button
+            android:id="@+id/btnMultiplayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Multiplayer"
+            android:textSize="18sp"
+            android:backgroundTint="#0E6D97"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+</RelativeLayout>

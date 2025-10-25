@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="light_square_color">#FFFFFFFF</color>
-    <color name="dark_square_color">#FF000000</color>
+    <!-- Base colors -->
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+    <!-- Default Chessboard Colors -->
+    <color name="default_light_square">#F0F0F0</color>
+    <color name="default_dark_square">#3A3A3A</color>
+
+    <!-- Wooden Chessboard Colors -->
+    <color name="wood_light_square">#DEB887</color> <!-- Burlywood -->
+    <color name="wood_dark_square">#8B4513</color>  <!-- Saddle Brown -->
+
+    <!-- UI Colors -->
+    <color name="primary">#00222B</color>          <!-- Deep teal for toolbar -->
+    <color name="on_primary">#FFD700</color>       <!-- Gold text for toolbar -->
+    <color name="background_overlay">#66000000</color> <!-- Transparent overlay -->
+
 </resources>
