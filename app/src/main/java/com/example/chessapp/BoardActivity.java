@@ -1,10 +1,14 @@
 package com.example.chessapp;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -28,6 +32,12 @@ public class BoardActivity extends AppCompatActivity {
     //    private Map<String, Integer> initialPieces;
     private Board board;
     private Square selectedSquare = Square.NONE;
+
+    LinearLayout blackMoves;
+    LinearLayout whiteMoves;
+
+
+    String playerWhiteName,playerBlackName;
 
     // This helper function remains the same
     public String gridIndexToChessSquare(int row, int col) {
@@ -64,6 +74,21 @@ public class BoardActivity extends AppCompatActivity {
                     // Highlight selected square
                     clickedCell.setColorFilter(0x9900FF00, android.graphics.PorterDuff.Mode.SRC_ATOP);
                     // TODO: You could also loop through 'allLegalMoves' again to highlight destination squares
+                    for (Move move : allLegalMoves) {
+                        if (move.getFrom().equals(clickedSquare)) {
+                            Square toSquare = move.getTo();
+
+                            // Loop through all 64 cells to find the matching ImageView
+                            for (int i = 0; i < chessboard.getChildCount(); i++) {
+                                ImageView cell = (ImageView) chessboard.getChildAt(i);
+                                Square cellSquare = (Square) cell.getTag();
+                                if (cellSquare.equals(toSquare)) {
+                                    cell.setBackgroundColor(Color.argb(150, 255, 255, 0)); // translucent yellow overlay
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         } else {
@@ -89,32 +114,76 @@ public class BoardActivity extends AppCompatActivity {
 
             if (intendedMove != null) {
                 // --- This is a LEGAL move ---
+
+                if( ((board.getSideToMove()).toString()).equalsIgnoreCase("BLACK") ){
+                    TextView move = new TextView(this);
+                    move.setText(intendedMove.toString()+" ");
+                    move.setTextColor(Color.WHITE);
+                    blackMoves.addView(move);
+                }
+                else{
+                    TextView move = new TextView(this);
+                    move.setText(intendedMove.toString()+" ");
+                    move.setTextColor(Color.WHITE);
+                    whiteMoves.addView(move);
+                }
+
                 board.doMove(intendedMove);
 
-                // *** THIS IS THE FIX ***
+                // --- Check for special conditions ---
+                if (board.isMated()) {
+                    String winnerColor = (board.getSideToMove().flip()).toString();
+                    String winnerPlayerName;
+                    if(winnerColor.equalsIgnoreCase("BLACK")){
+                        winnerPlayerName = playerBlackName;
+                    } else {
+                        winnerPlayerName = playerWhiteName;
+                    }
+                    Toast.makeText(this, "Checkmate! " + winnerPlayerName + " wins!", Toast.LENGTH_LONG).show();
+                    //****ADD CODE TO ADD WINNER TO DATABASE****
+                }
+                else if (board.isKingAttacked()) {
+                    Toast.makeText(this, "Check!", Toast.LENGTH_SHORT).show();
+                }
+                else if (board.isDraw()) {
+                    Toast.makeText(this, "Game drawn!", Toast.LENGTH_LONG).show();
+                }
+
+                // --- Promotion check (optional logging) ---
                 if (intendedMove.getPromotion() != Piece.NONE) {
-                    // A promotion just happened!
-                    // The 'intendedMove' object already contains the promotion piece
-                    // (e.g., QUEEN), and board.doMove() has already placed it.
-                    // You could add a sound effect or log message here.
+                    // A promotion just happened
                 }
             }
+
 
             // --- Illegal move OR deselecting ---
             selectedSquare = Square.NONE;
             syncBoardWithUI(); // Update UI and clear all highlights
         }
     }
+
     private void syncBoardWithUI() {
         for (int i = 0; i < chessboard.getChildCount(); i++) {
             ImageView cellView = (ImageView) chessboard.getChildAt(i);
             Square square = (Square) cellView.getTag();
             Piece piece = board.getPiece(square);
 
-            // Clear any old highlights
+            // --- Determine the square's original color ---
+            int index = i; // position in GridLayout
+            int row = index / 8;
+            int col = index % 8;
+            boolean isLightSquare = (row + col) % 2 == 0;
+
+            int lightColor = Color.parseColor("#e8dda9");
+            int darkColor = Color.parseColor("#649962");
+
+            // --- Restore original background color ---
+            cellView.setBackgroundColor(isLightSquare ? lightColor : darkColor);
+
+            // --- Clear old tint from pieces ---
             cellView.clearColorFilter();
 
-            // Set the correct piece
+            // --- Update the piece image ---
             if (piece != Piece.NONE) {
                 cellView.setImageResource(getDrawableIdForPiece(piece));
             } else {
@@ -134,52 +203,36 @@ public class BoardActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Your initial piece setup remains the same
-//        setupInitialPieces();
+        blackMoves = findViewById(R.id.black_moves_container);
+        whiteMoves = findViewById(R.id.white_moves_container);
+
+        Intent i = getIntent();
+        String player1 = i.getStringExtra("player1");
+        String player2 = i.getStringExtra("player2");
+        String player1Color = i.getStringExtra("color");
+
+        TextView playerwhitetext = findViewById(R.id.player_white_name);
+        TextView playerblacktext = findViewById(R.id.player_black_name);
+
+        if(player1Color.equals("Black")) {
+            playerwhitetext.setText("Player White: "+player2);
+            playerblacktext.setText("Player Black: "+player1);
+            playerBlackName = player1;
+            playerWhiteName = player2;
+
+        } else {
+            playerwhitetext.setText("Player White: "+player1);
+            playerblacktext.setText("Player Black: "+player2);
+            playerWhiteName = player1;
+            playerBlackName = player2;
+        }
+
+
         board = new Board();
         chessboard = findViewById(R.id.chessboard);
 
         // We use post() to ensure the layout is measured before we get its width
         chessboard.post(this::createChessBoard);
-    }
-
-    private void setupInitialPieces() {
-//        initialPieces = new HashMap<>();
-//        // White pieces
-//        initialPieces.put("6_0", R.drawable.white_pawn);
-//        initialPieces.put("6_1", R.drawable.white_pawn);
-//        initialPieces.put("6_2", R.drawable.white_pawn);
-//        initialPieces.put("6_3", R.drawable.white_pawn);
-//        initialPieces.put("6_4", R.drawable.white_pawn);
-//        initialPieces.put("6_5", R.drawable.white_pawn);
-//        initialPieces.put("6_6", R.drawable.white_pawn);
-//        initialPieces.put("6_7", R.drawable.white_pawn);
-//        initialPieces.put("7_0", R.drawable.white_rook);
-//        initialPieces.put("7_1", R.drawable.white_knight);
-//        initialPieces.put("7_2", R.drawable.white_bishop);
-//        initialPieces.put("7_3", R.drawable.white_queen);
-//        initialPieces.put("7_4", R.drawable.white_king);
-//        initialPieces.put("7_5", R.drawable.white_bishop);
-//        initialPieces.put("7_6", R.drawable.white_knight);
-//        initialPieces.put("7_7", R.drawable.white_rook);
-//
-//        // Black pieces
-//        initialPieces.put("1_0", R.drawable.black_pawn);
-//        initialPieces.put("1_1", R.drawable.black_pawn);
-//        initialPieces.put("1_2", R.drawable.black_pawn);
-//        initialPieces.put("1_3", R.drawable.black_pawn);
-//        initialPieces.put("1_4", R.drawable.black_pawn);
-//        initialPieces.put("1_5", R.drawable.black_pawn);
-//        initialPieces.put("1_6", R.drawable.black_pawn);
-//        initialPieces.put("1_7", R.drawable.black_pawn);
-//        initialPieces.put("0_0", R.drawable.black_rook);
-//        initialPieces.put("0_1", R.drawable.black_knight);
-//        initialPieces.put("0_2", R.drawable.black_bishop);
-//        initialPieces.put("0_3", R.drawable.black_queen);
-//        initialPieces.put("0_4", R.drawable.black_king);
-//        initialPieces.put("0_5", R.drawable.black_bishop);
-//        initialPieces.put("0_6", R.drawable.black_knight);
-//        initialPieces.put("0_7", R.drawable.black_rook);
     }
 
     private void createChessBoard() {
