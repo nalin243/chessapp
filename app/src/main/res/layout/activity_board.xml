@@ -4,21 +4,103 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#2C2F33"
+    tools:context=".BoardActivity">
+
+    <View
+        android:id="@+id/board_border"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#427a4c"
+        app:layout_constraintBottom_toBottomOf="@id/file_labels_bottom"
+        app:layout_constraintEnd_toEndOf="@id/rank_labels_right"
+        app:layout_constraintStart_toStartOf="@id/rank_labels_left"
+        app:layout_constraintTop_toTopOf="@id/file_labels_top" />
 
     <GridLayout
         android:id="@+id/chessboard"
-        android:layout_width="404dp"
-        android:layout_height="459dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:columnCount="8"
-        android:padding="4dp"
         android:rowCount="8"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.272"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.784"></GridLayout>
+        app:layout_constraintWidth_percent="0.9" />
 
+    <LinearLayout
+        android:id="@+id/file_labels_top"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/chessboard"
+        app:layout_constraintEnd_toEndOf="@id/chessboard"
+        app:layout_constraintStart_toStartOf="@id/chessboard">
+        <TextView style="@style/FileLabel" android:text="A"/>
+        <TextView style="@style/FileLabel" android:text="B"/>
+        <TextView style="@style/FileLabel" android:text="C"/>
+        <TextView style="@style/FileLabel" android:text="D"/>
+        <TextView style="@style/FileLabel" android:text="E"/>
+        <TextView style="@style/FileLabel" android:text="F"/>
+        <TextView style="@style/FileLabel" android:text="G"/>
+        <TextView style="@style/FileLabel" android:text="H"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/file_labels_bottom"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/chessboard"
+        app:layout_constraintEnd_toEndOf="@id/chessboard"
+        app:layout_constraintStart_toStartOf="@id/chessboard">
+        <TextView style="@style/FileLabel" android:text="A"/>
+        <TextView style="@style/FileLabel" android:text="B"/>
+        <TextView style="@style/FileLabel" android:text="C"/>
+        <TextView style="@style/FileLabel" android:text="D"/>
+        <TextView style="@style/FileLabel" android:text="E"/>
+        <TextView style="@style/FileLabel" android:text="F"/>
+        <TextView style="@style/FileLabel" android:text="G"/>
+        <TextView style="@style/FileLabel" android:text="H"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rank_labels_left"
+        android:layout_width="24dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/chessboard"
+        app:layout_constraintEnd_toStartOf="@id/chessboard"
+        app:layout_constraintTop_toTopOf="@id/chessboard">
+        <TextView style="@style/RankLabel" android:text="8"/>
+        <TextView style="@style/RankLabel" android:text="7"/>
+        <TextView style="@style/RankLabel" android:text="6"/>
+        <TextView style="@style/RankLabel" android:text="5"/>
+        <TextView style="@style/RankLabel" android:text="4"/>
+        <TextView style="@style/RankLabel" android:text="3"/>
+        <TextView style="@style/RankLabel" android:text="2"/>
+        <TextView style="@style/RankLabel" android:text="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rank_labels_right"
+        android:layout_width="24dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/chessboard"
+        app:layout_constraintStart_toEndOf="@id/chessboard"
+        app:layout_constraintTop_toTopOf="@id/chessboard">
+        <TextView style="@style/RankLabel" android:text="8"/>
+        <TextView style="@style/RankLabel" android:text="7"/>
+        <TextView style="@style/RankLabel" android:text="6"/>
+        <TextView style="@style/RankLabel" android:text="5"/>
+        <TextView style="@style/RankLabel" android:text="4"/>
+        <TextView style="@style/RankLabel" android:text="3"/>
+        <TextView style="@style/RankLabel" android:text="2"/>
+        <TextView style="@style/RankLabel" android:text="1"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
