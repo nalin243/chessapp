@@ -5,10 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2C2F33"
+    android:background="@drawable/mandala_bg"
     tools:context=".BoardActivity">
 
-    <!-- Player name (Top - Black) -->
     <LinearLayout
         android:id="@+id/black_info_bar"
         android:layout_width="0dp"
@@ -17,43 +16,53 @@
         android:gravity="center_vertical"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/file_labels_top"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintStart_toStartOf="@id/chessboard"
+        app:layout_constraintEnd_toEndOf="@id/chessboard">
 
         <TextView
             android:id="@+id/player_black_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/button_bg_teal"
+            android:gravity="center"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="16dp"
             android:text="Black: Player 2"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginEnd="16dp" />
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/black_scroll_view" android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            >
+            <LinearLayout
+            android:id="@+id/black_moves_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="12dp"/>
+        </HorizontalScrollView>
 
         <TextView
             android:id="@+id/black_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="⏱ 10s"
+            android:layout_marginStart="8dp"
+            android:minWidth="90dp"
+            android:text="30:00"
             android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:layout_marginStart="16dp"/>
-
-        <HorizontalScrollView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/black_moves_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="8dp"
+            android:background="@drawable/button_bg_teal" />
     </LinearLayout>
 
-    <!-- Board border -->
     <View
         android:id="@+id/board_border"
         android:layout_width="0dp"
@@ -63,8 +72,6 @@
         app:layout_constraintEnd_toEndOf="@id/rank_labels_right"
         app:layout_constraintStart_toStartOf="@id/rank_labels_left"
         app:layout_constraintTop_toTopOf="@id/file_labels_top" />
-
-    <!-- Chessboard -->
     <GridLayout
         android:id="@+id/chessboard"
         android:layout_width="0dp"
@@ -77,8 +84,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.9" />
-
-    <!-- File labels (Top) -->
     <LinearLayout
         android:id="@+id/file_labels_top"
         android:layout_width="0dp"
@@ -96,8 +101,6 @@
         <TextView style="@style/FileLabel" android:text="G"/>
         <TextView style="@style/FileLabel" android:text="H"/>
     </LinearLayout>
-
-    <!-- File labels (Bottom) -->
     <LinearLayout
         android:id="@+id/file_labels_bottom"
         android:layout_width="0dp"
@@ -116,7 +119,6 @@
         <TextView style="@style/FileLabel" android:text="H"/>
     </LinearLayout>
 
-    <!-- Player name (Bottom - White) -->
     <LinearLayout
         android:id="@+id/white_info_bar"
         android:layout_width="0dp"
@@ -125,44 +127,54 @@
         android:gravity="center_vertical"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/file_labels_bottom"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/player_white_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="White: Player 1"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginEnd="16dp" />
+        app:layout_constraintStart_toStartOf="@id/chessboard"
+        app:layout_constraintEnd_toEndOf="@id/chessboard">
 
         <TextView
             android:id="@+id/white_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="⏱ 10s"
+            android:layout_marginEnd="8dp"
+            android:minWidth="90dp"
+            android:text="30:00"
             android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:layout_marginStart="16dp"/>
-
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="8dp"
+            android:background="@drawable/button_bg_teal" />
 
         <HorizontalScrollView
-            android:layout_width="0dp"
+            android:id="@+id/white_scroll_view" android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:scrollbars="none">
-
+            android:scrollbars="none"
+            >
             <LinearLayout
-                android:id="@+id/white_moves_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+            android:id="@+id/white_moves_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="12dp"/>
         </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/player_white_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/button_bg_teal"
+            android:gravity="center"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="16dp"
+            android:text="White: Player 1"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
-    <!-- Rank labels (Left) -->
     <LinearLayout
         android:id="@+id/rank_labels_left"
         android:layout_width="24dp"
@@ -180,8 +192,6 @@
         <TextView style="@style/RankLabel" android:text="2"/>
         <TextView style="@style/RankLabel" android:text="1"/>
     </LinearLayout>
-
-    <!-- Rank labels (Right) -->
     <LinearLayout
         android:id="@+id/rank_labels_right"
         android:layout_width="24dp"
@@ -197,19 +207,23 @@
         <TextView style="@style/RankLabel" android:text="4"/>
         <TextView style="@style/RankLabel" android:text="3"/>
         <TextView style="@style/RankLabel" android:text="2"/>
-        <TextView style="@style/RankLabel" android:text="1"/>
+        <TextView style="@style/RankLabel" android:text="1" />
     </LinearLayout>
-
-    <ImageView
+    <ImageButton
         android:id="@+id/settingIcon"
-        android:layout_width="41dp"
-        android:layout_height="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/black_info_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/button_bg_teal"
+        android:contentDescription="Settings"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/setting"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.188"
-        app:srcCompat="@drawable/setting" />
+        app:layout_constraintVertical_bias="0.023"
+        app:tint="@android:color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.HorizontalScrollView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,6 +45,8 @@ public class BoardActivity extends AppCompatActivity {
 
     LinearLayout blackMoves;
     LinearLayout whiteMoves;
+    HorizontalScrollView blackScrollView;
+    HorizontalScrollView whiteScrollView;
 
     int moveRecordLimit = 10,movesRecorded=0;//default is 10
 
@@ -88,6 +91,8 @@ public class BoardActivity extends AppCompatActivity {
         final int menu_timer_id = R.id.menu_timer;
         final int menu_move_record_limit_id = R.id.menu_move_record_limit;
         final int menu_clear_moves = R.id.menu_clear_moves;
+        final int menu_restart_game_id = R.id.menu_restart_game;
+        final int menu_exit_game_id = R.id.menu_exit_game;
 
         popup.setOnMenuItemClickListener(item -> {
 
@@ -101,6 +106,14 @@ public class BoardActivity extends AppCompatActivity {
             }
             else if(item.getItemId()==menu_clear_moves) {
                 clearMoveRecords();
+                return true;
+            }
+            else if (item.getItemId() == menu_restart_game_id) {
+                restartGame();
+                return true;
+            }
+            else if (item.getItemId() == menu_exit_game_id) {
+                exitGame();
                 return true;
             }
             return false;
@@ -149,6 +162,22 @@ public class BoardActivity extends AppCompatActivity {
         whiteMoves.removeAllViews();
 
         Toast.makeText(this, "Move records cleared", Toast.LENGTH_SHORT).show();
+    }
+
+    private void restartGame() {
+        board = new Board();
+        clearMoveRecords();
+        movesRecorded = 0;
+        syncBoardWithUI();
+        cancelTimers();
+        startWhiteTimer();
+
+        Toast.makeText(this, "Game Restarted", Toast.LENGTH_SHORT).show();
+    }
+
+    private void exitGame() {
+        cancelTimers();
+        finish();
     }
 
 
@@ -227,6 +256,7 @@ public class BoardActivity extends AppCompatActivity {
                         move.setText(" "+intendedMove.toString());
                         move.setTextColor(Color.WHITE);
                         blackMoves.addView(move);
+                        blackScrollView.post(() -> blackScrollView.fullScroll(View.FOCUS_RIGHT));
                         movesRecorded++;
                     }
                 }
@@ -236,6 +266,7 @@ public class BoardActivity extends AppCompatActivity {
                         move.setText(" "+intendedMove.toString());
                         move.setTextColor(Color.WHITE);
                         whiteMoves.addView(move);
+                        whiteScrollView.post(() -> whiteScrollView.fullScroll(View.FOCUS_RIGHT));
                         movesRecorded++;
                     }
                 }
@@ -322,6 +353,8 @@ public class BoardActivity extends AppCompatActivity {
 
         blackMoves = findViewById(R.id.black_moves_container);
         whiteMoves = findViewById(R.id.white_moves_container);
+        blackScrollView = findViewById(R.id.black_scroll_view);
+        whiteScrollView = findViewById(R.id.white_scroll_view);
 
         Intent i = getIntent();
         String player1 = i.getStringExtra("player1");

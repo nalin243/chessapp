@@ -16,5 +16,12 @@
             android:title="Clear Move Records"
             android:icon="@android:drawable/ic_menu_delete" />
 
+        <item
+            android:id="@+id/menu_restart_game"
+            android:title="Restart Game" />
+        <item
+            android:id="@+id/menu_exit_game"
+            android:title="Exit Game" />
+
     </group>
 </menu>

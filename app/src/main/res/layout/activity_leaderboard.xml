@@ -22,7 +22,6 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="25dp"
         android:background="#33000000"
-        app:navigationIcon="@drawable/ic_chess_icon"
         app:popupTheme="@style/PopupMenuStyle.Mystic"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 

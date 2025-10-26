@@ -16,8 +16,7 @@
         android:layout_marginTop="25dp"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/PopupMenuStyle.Mystic"
-
-        app:navigationIcon="@drawable/ic_chess_icon">
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,7 +38,7 @@
         android:layout_centerInParent="true"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:background="#A0000000">
+        android:background="@drawable/rounded_overlay_bg_for_home_page">
 
         <TextView
             android:layout_width="wrap_content"
@@ -47,7 +46,7 @@
             android:text="Select Game Mode"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textColor="#FFD700"
             android:layout_marginBottom="40dp"/>
 
         <Button
@@ -57,8 +56,8 @@
             android:text="Play with Computer"
             android:layout_marginBottom="16dp"
             android:textSize="18sp"
-            android:backgroundTint="#0E6D97"
-            android:textColor="@android:color/white"/>
+            android:backgroundTint="#63645425"
+            android:textColor="#FFD700"/>
 
         <Button
             android:id="@+id/btnMultiplayer"
@@ -66,8 +65,8 @@
             android:layout_height="wrap_content"
             android:text="Multiplayer"
             android:textSize="18sp"
-            android:backgroundTint="#0E6D97"
-            android:textColor="@android:color/white"/>
+            android:backgroundTint="#63645425"
+            android:textColor="#FFD700"/>
 
     </LinearLayout>
 </RelativeLayout>
