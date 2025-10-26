@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/menu_timer"
+            android:title="Change Timer Settings"
+            android:icon="@android:drawable/ic_menu_recent_history" />
+
+        <item
+            android:id="@+id/menu_move_record_limit"
+            android:title="Change Number of Move Records"
+            android:icon="@android:drawable/ic_menu_sort_by_size" />
+
+        <item
+            android:id="@+id/menu_clear_moves"
+            android:title="Clear Move Records"
+            android:icon="@android:drawable/ic_menu_delete" />
+
+    </group>
+</menu>
