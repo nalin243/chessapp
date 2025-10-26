@@ -50,11 +50,15 @@ public class UserRegistrationActivity extends AppCompatActivity {
             getSharedPreferences("players", MODE_PRIVATE).edit()
                     .putString("player1", p1).putString("player2", p2).apply();
 
+            RadioButton selectedColorButton = (findViewById(radioGroupColor.getCheckedRadioButtonId()));
+            String playerColor = selectedColorButton.getText().toString();
+
             // Start BoardActivity
             Intent i = new Intent(UserRegistrationActivity.this, BoardActivity.class);
             // optionally pass names:
             i.putExtra("player1", p1);
             i.putExtra("player2", p2);
+            i.putExtra("color",playerColor);
             startActivity(i);
             finish();
         });
