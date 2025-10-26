@@ -17,14 +17,23 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // Use a Handler to delay the start of MainActivity
+        // Use a Handler to delay the start of next activity
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Create an Intent to start MainActivity
-                Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(mainIntent);
-
+                // Check if user is already logged in
+                AuthManager authManager = AuthManager.getInstance(SplashActivity.this);
+                
+                Intent nextIntent;
+                if (authManager.isLoggedIn()) {
+                    // User is logged in, go to MainActivity
+                    nextIntent = new Intent(SplashActivity.this, MainActivity.class);
+                } else {
+                    // User is not logged in, go to LoginActivity
+                    nextIntent = new Intent(SplashActivity.this, LoginActivity.class);
+                }
+                
+                startActivity(nextIntent);
                 // Close the splash activity so it's not on the back stack
                 finish();
             }

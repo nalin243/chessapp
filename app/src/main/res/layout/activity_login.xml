@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/mandala_bg"
+    android:padding="24dp"
+    tools:context=".LoginActivity">
+
+    <!-- Semi-transparent overlay for readability -->
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="350dp"
+        android:layout_height="450dp"
+        android:background="#A0000000"
+        android:layout_centerInParent="true" />
+
+    <!-- Main container -->
+    <LinearLayout
+        android:id="@+id/loginContainer"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MYSTIC SQUARES"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/cinzel_decorative"
+            android:textColor="#FFD700"
+            android:layout_marginBottom="32dp"
+            android:gravity="center" />
+
+        <!-- Username input -->
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Username"
+            android:textColorHint="#CCFFD700"
+            android:textColor="#FFD700"
+            android:background="@android:color/transparent"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:inputType="text"
+            android:maxLines="1"
+            android:fontFamily="@font/cinzel_decorative" />
+
+        <!-- Username underline -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#FFD700"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="-16dp" />
+
+        <!-- Password input -->
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Password"
+            android:textColorHint="#CCFFD700"
+            android:textColor="#FFD700"
+            android:background="@android:color/transparent"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:fontFamily="@font/cinzel_decorative" />
+
+        <!-- Password underline -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#FFD700"
+            android:layout_marginBottom="32dp"
+            android:layout_marginTop="-16dp" />
+
+        <!-- Error message -->
+        <TextView
+            android:id="@+id/tvError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#FF6B6B"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            android:fontFamily="@font/cinzel_decorative" />
+
+        <!-- Login button -->
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="LOGIN"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/cinzel_decorative"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_bg_teal"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Register button -->
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="REGISTER"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/cinzel_decorative"
+            android:textColor="#FFD700"
+            android:background="@android:color/transparent"
+            android:layout_marginBottom="8dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

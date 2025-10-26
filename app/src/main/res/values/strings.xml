@@ -8,4 +8,12 @@
     <string name="tips_header">Tips for Beginners:</string>
     <string name="tips_text">1. Control the center of the board to gain more mobility.\n\n2. Develop your knights and bishops early for better control.\n\n3. Keep your King safe by castling early.\n\n4. Avoid moving the same piece multiple times in the opening.\n\n5. Always think one step ahead — anticipate your opponent’s move.</string>
     <string name="exit">Exit</string>
+    
+    <!-- Login Activity Strings -->
+    <string name="login_title">MYSTIC SQUARES</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">LOGIN</string>
+    <string name="register_button">REGISTER</string>
+    <string name="back_to_login">BACK TO LOGIN</string>
 </resources>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -51,6 +52,12 @@ public class BoardActivity extends AppCompatActivity {
     int moveRecordLimit = 10,movesRecorded=0;//default is 10
 
     String playerWhiteName,playerBlackName;
+    
+    // Game statistics tracking
+    private DatabaseHelper databaseHelper;
+    private AuthManager authManager;
+    private long gameStartTime;
+    private boolean isPlayer1Registered;
 
     private void startWhiteTimer() {
         cancelTimers();
@@ -61,8 +68,8 @@ public class BoardActivity extends AppCompatActivity {
             }
             public void onFinish() {
                 Toast.makeText(BoardActivity.this, "White's time over! Black wins!", Toast.LENGTH_LONG).show();
-                //****ADD CODE TO ADD WINNER TO DATABASE****
-                //playerWhiteName and playerBlackName are there
+                // Update winner statistics - Black wins due to White timeout
+                updateGameStatistics(playerBlackName, false);
                 Intent i = new Intent(BoardActivity.this, MainActivity.class);
                 startActivity(i);
             }
@@ -78,8 +85,8 @@ public class BoardActivity extends AppCompatActivity {
             }
             public void onFinish() {
                 Toast.makeText(BoardActivity.this, "Black's time over! White wins!", Toast.LENGTH_LONG).show();
-                //****ADD CODE TO ADD WINNER TO DATABASE****
-                //playerWhiteName and playerBlackName are there
+                // Update winner statistics - White wins due to Black timeout
+                updateGameStatistics(playerWhiteName, true);
                 Intent i = new Intent(BoardActivity.this, MainActivity.class);
                 startActivity(i);
             }
@@ -287,13 +294,17 @@ public class BoardActivity extends AppCompatActivity {
                 if (board.isMated()) {
                     String winnerColor = (board.getSideToMove().flip()).toString();
                     String winnerPlayerName;
+                    boolean isWhiteWinner;
                     if(winnerColor.equalsIgnoreCase("BLACK")){
                         winnerPlayerName = playerBlackName;
+                        isWhiteWinner = false;
                     } else {
                         winnerPlayerName = playerWhiteName;
+                        isWhiteWinner = true;
                     }
                     Toast.makeText(this, "Checkmate! " + winnerPlayerName + " wins!", Toast.LENGTH_LONG).show();
-                    //****ADD CODE TO ADD WINNER TO DATABASE****
+                    // Update winner statistics
+                    updateGameStatistics(winnerPlayerName, isWhiteWinner);
                 }
                 else if (board.isKingAttacked()) {
                     Toast.makeText(this, "Check!", Toast.LENGTH_SHORT).show();
@@ -364,10 +375,16 @@ public class BoardActivity extends AppCompatActivity {
         blackScrollView = findViewById(R.id.black_scroll_view);
         whiteScrollView = findViewById(R.id.white_scroll_view);
 
+        // Initialize database and authentication components
+        databaseHelper = new DatabaseHelper(this);
+        authManager = AuthManager.getInstance(this);
+        gameStartTime = System.currentTimeMillis();
+
         Intent i = getIntent();
         String player1 = i.getStringExtra("player1");
         String player2 = i.getStringExtra("player2");
         String player1Color = i.getStringExtra("color");
+        isPlayer1Registered = i.getBooleanExtra("isPlayer1Registered", false);
 
         whiteTimerText = findViewById(R.id.white_timer);
         blackTimerText = findViewById(R.id.black_timer);
@@ -457,6 +474,63 @@ public class BoardActivity extends AppCompatActivity {
             case BLACK_QUEEN: return R.drawable.black_queen;
             case BLACK_KING: return R.drawable.black_king;
             default: return 0; // Or null
+        }
+    }
+
+    /**
+     * Updates game statistics for the winning player.
+     * Handles both registered and unregistered player scenarios.
+     * 
+     * @param winnerName The name of the winning player
+     * @param isWhiteWinner True if the winner played as white, false if black
+     */
+    private void updateGameStatistics(String winnerName, boolean isWhiteWinner) {
+        try {
+            // Calculate game duration in milliseconds
+            long gameEndTime = System.currentTimeMillis();
+            long gameDuration = gameEndTime - gameStartTime;
+            
+            // Determine if the winner is a registered user
+            User winnerUser = null;
+            boolean isWinnerRegistered = false;
+            
+            // Check if the winner is the currently logged-in user
+            if (authManager.isLoggedIn() && authManager.getCurrentUsername().equals(winnerName)) {
+                winnerUser = authManager.getCurrentUser();
+                isWinnerRegistered = true;
+            } else {
+                // Check if the winner is a registered user (but not currently logged in)
+                winnerUser = databaseHelper.getUserByUsername(winnerName);
+                isWinnerRegistered = (winnerUser != null);
+            }
+            
+            // Only update statistics for registered users
+            if (isWinnerRegistered && winnerUser != null) {
+                // Increment win count and add game time
+                int newWinCount = winnerUser.getWins() + 1;
+                long newTotalTime = winnerUser.getTotalTimePlayed() + gameDuration;
+                
+                // Update database
+                int rowsUpdated = databaseHelper.updateUserStats(winnerUser.getId(), newWinCount, newTotalTime);
+                
+                if (rowsUpdated > 0) {
+                    Log.d("BoardActivity", "Updated stats for user: " + winnerName + 
+                          ", Wins: " + newWinCount + ", Total Time: " + newTotalTime);
+                    
+                    // Refresh current user data if they are the winner
+                    if (authManager.isLoggedIn() && authManager.getCurrentUsername().equals(winnerName)) {
+                        authManager.refreshCurrentUser();
+                    }
+                } else {
+                    Log.w("BoardActivity", "Failed to update stats for user: " + winnerName);
+                }
+            } else {
+                Log.d("BoardActivity", "Winner " + winnerName + " is not a registered user, skipping stats update");
+            }
+            
+        } catch (Exception e) {
+            Log.e("BoardActivity", "Error updating game statistics", e);
+            Toast.makeText(this, "Error updating game statistics", Toast.LENGTH_SHORT).show();
         }
     }
 }
