@@ -4,13 +4,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -27,6 +31,11 @@ import java.util.List;
 
 public class BoardActivity extends AppCompatActivity {
 
+    private TextView whiteTimerText, blackTimerText;
+    private android.os.CountDownTimer whiteTimer, blackTimer;
+    private long timerDuration = 10000; // default 10s
+    private boolean isWhiteTurn = true;
+
     private GridLayout chessboard;
     private ImageView selectedCell = null;
     //    private Map<String, Integer> initialPieces;
@@ -36,17 +45,115 @@ public class BoardActivity extends AppCompatActivity {
     LinearLayout blackMoves;
     LinearLayout whiteMoves;
 
+    int moveRecordLimit = 10,movesRecorded=0;//default is 10
 
     String playerWhiteName,playerBlackName;
 
-    // This helper function remains the same
-    public String gridIndexToChessSquare(int row, int col) {
-        char file = (char) ('a' + col);
-        int rank = 8 - row;
-        return "" + file + rank;
+    private void startWhiteTimer() {
+        cancelTimers();
+        isWhiteTurn = true;
+        whiteTimer = new android.os.CountDownTimer(timerDuration, 1000) {
+            public void onTick(long millisUntilFinished) {
+                whiteTimerText.setText("⏱ " + millisUntilFinished / 1000 + "s");
+            }
+            public void onFinish() {
+                Toast.makeText(BoardActivity.this, "White's time over! Black wins!", Toast.LENGTH_LONG).show();
+            }
+        }.start();
     }
 
-    // This handler function will now work correctly
+    private void startBlackTimer() {
+        cancelTimers();
+        isWhiteTurn = false;
+        blackTimer = new android.os.CountDownTimer(timerDuration, 1000) {
+            public void onTick(long millisUntilFinished) {
+                blackTimerText.setText("⏱ " + millisUntilFinished / 1000 + "s");
+            }
+            public void onFinish() {
+                Toast.makeText(BoardActivity.this, "Black's time over! White wins!", Toast.LENGTH_LONG).show();
+            }
+        }.start();
+    }
+
+    private void cancelTimers() {
+        if (whiteTimer != null) whiteTimer.cancel();
+        if (blackTimer != null) blackTimer.cancel();
+    }
+
+
+    private void showCustomizationMenu(View anchor) {
+        PopupMenu popup = new PopupMenu(this, anchor);
+        popup.getMenuInflater().inflate(R.menu.customization_menu, popup.getMenu());
+
+        final int menu_timer_id = R.id.menu_timer;
+        final int menu_move_record_limit_id = R.id.menu_move_record_limit;
+        final int menu_clear_moves = R.id.menu_clear_moves;
+
+        popup.setOnMenuItemClickListener(item -> {
+
+            if(item.getItemId()==menu_timer_id) {
+                showTimerDialog();
+                return true;
+            }
+            else if(item.getItemId()==menu_move_record_limit_id) {
+                showMoveRecordDialog();
+                return true;
+            }
+            else if(item.getItemId()==menu_clear_moves) {
+                clearMoveRecords();
+                return true;
+            }
+            return false;
+        });
+
+        popup.show();
+    }
+
+    private void showTimerDialog() {
+        String[] options = {"10s", "20s", "30s"};
+        final long[] durations = {10000, 20000, 30000};
+        new AlertDialog.Builder(this)
+                .setTitle("Select Timer Duration")
+                .setItems(options, (dialog, which) -> {
+                    timerDuration = durations[which];
+                    Toast.makeText(this, "Timer set to " + options[which], Toast.LENGTH_SHORT).show();
+                })
+                .show();
+    }
+
+    private void showMoveRecordDialog() {
+        String[] options = {"Last 10", "Last 20", "Last 30"};
+        new AlertDialog.Builder(this)
+                .setTitle("Select Move Record Limit")
+                .setItems(options, (dialog, which) -> {
+                    if(options[which].equals("Last 10")){
+                        moveRecordLimit = 10;
+                    }
+                    else if(options[which].equals("Last 20")){
+                        moveRecordLimit = 20;
+                    }
+                    else if(options[which].equals("Last 30")){
+                        moveRecordLimit = 30;
+                    }
+                    Toast.makeText(this, "Move record limit set to " + options[which], Toast.LENGTH_SHORT).show();
+                })
+                .show();
+    }
+
+
+    private void clearMoveRecords() {
+        LinearLayout blackMoves = findViewById(R.id.black_moves_container);
+        LinearLayout whiteMoves = findViewById(R.id.white_moves_container);
+
+        blackMoves.removeAllViews();
+        whiteMoves.removeAllViews();
+
+        Toast.makeText(this, "Move records cleared", Toast.LENGTH_SHORT).show();
+    }
+
+
+
+// This handler function will now work correctly
     private void handleCellClick(ImageView clickedCell) {
         Square clickedSquare = (Square) clickedCell.getTag();
 
@@ -73,7 +180,6 @@ public class BoardActivity extends AppCompatActivity {
                     selectedSquare = clickedSquare;
                     // Highlight selected square
                     clickedCell.setColorFilter(0x9900FF00, android.graphics.PorterDuff.Mode.SRC_ATOP);
-                    // TODO: You could also loop through 'allLegalMoves' again to highlight destination squares
                     for (Move move : allLegalMoves) {
                         if (move.getFrom().equals(clickedSquare)) {
                             Square toSquare = move.getTo();
@@ -116,19 +222,27 @@ public class BoardActivity extends AppCompatActivity {
                 // --- This is a LEGAL move ---
 
                 if( ((board.getSideToMove()).toString()).equalsIgnoreCase("BLACK") ){
-                    TextView move = new TextView(this);
-                    move.setText(intendedMove.toString()+" ");
-                    move.setTextColor(Color.WHITE);
-                    blackMoves.addView(move);
+                    if(movesRecorded<moveRecordLimit) {
+                        TextView move = new TextView(this);
+                        move.setText(" "+intendedMove.toString());
+                        move.setTextColor(Color.WHITE);
+                        blackMoves.addView(move);
+                        movesRecorded++;
+                    }
                 }
                 else{
                     TextView move = new TextView(this);
-                    move.setText(intendedMove.toString()+" ");
-                    move.setTextColor(Color.WHITE);
-                    whiteMoves.addView(move);
+                    if(movesRecorded<moveRecordLimit) {
+                        move.setText(" "+intendedMove.toString());
+                        move.setTextColor(Color.WHITE);
+                        whiteMoves.addView(move);
+                        movesRecorded++;
+                    }
                 }
 
                 board.doMove(intendedMove);
+                if (isWhiteTurn) startBlackTimer();
+                else startWhiteTimer();
 
                 // --- Check for special conditions ---
                 if (board.isMated()) {
@@ -203,6 +317,9 @@ public class BoardActivity extends AppCompatActivity {
             return insets;
         });
 
+        ImageView settingsButton = findViewById(R.id.settingIcon);
+        settingsButton.setOnClickListener(v -> showCustomizationMenu(v));
+
         blackMoves = findViewById(R.id.black_moves_container);
         whiteMoves = findViewById(R.id.white_moves_container);
 
@@ -210,6 +327,10 @@ public class BoardActivity extends AppCompatActivity {
         String player1 = i.getStringExtra("player1");
         String player2 = i.getStringExtra("player2");
         String player1Color = i.getStringExtra("color");
+
+        whiteTimerText = findViewById(R.id.white_timer);
+        blackTimerText = findViewById(R.id.black_timer);
+        startWhiteTimer();
 
         TextView playerwhitetext = findViewById(R.id.player_white_name);
         TextView playerblacktext = findViewById(R.id.player_black_name);
