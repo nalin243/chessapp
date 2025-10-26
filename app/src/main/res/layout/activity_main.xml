@@ -8,6 +8,21 @@
     android:padding="24dp"
     tools:context=".MainActivity">
 
+    <!-- Logout Button -->
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:text="LOGOUT"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/cinzel_decorative"
+        android:textColor="#FFD700"
+        android:background="@android:color/transparent"
+        android:padding="8dp" />
+
     <!-- Semi-transparent overlay for readability -->
     <View
         android:layout_width="300dp"
@@ -23,6 +38,20 @@
         android:layout_centerInParent="true"
         android:orientation="vertical"
         android:gravity="center">
+
+        <!-- User Greeting -->
+        <TextView
+            android:id="@+id/tvUserGreeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome, Player!"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/cinzel_decorative"
+            android:textColor="#FFD700"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:visibility="gone" />
 
         <!-- PLAY -->
         <Button

@@ -24,6 +24,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
     RadioGroup radioGroupColor;
     Button btnStartGame;
     Toolbar toolbar; // This should be androidx.appcompat.widget.Toolbar
+    private AuthManager authManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,9 @@ public class UserRegistrationActivity extends AppCompatActivity {
         radioGroupColor = findViewById(R.id.radioGroupColor);
         btnStartGame = findViewById(R.id.btnStartGame);
 
+        // Initialize AuthManager
+        authManager = AuthManager.getInstance(this);
+
         // This code sets up the toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -43,9 +47,17 @@ public class UserRegistrationActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
+        // Setup player 1 field based on authentication status
+        setupPlayer1Field();
+
         btnStartGame.setOnClickListener(v -> {
+            if (!validateInputs()) {
+                return;
+            }
+
             String p1 = etPlayer1Name.getText().toString().trim();
             String p2 = etPlayer2Name.getText().toString().trim();
+            
             // Save to SharedPreferences (optional) for display on board/leaderboard:
             getSharedPreferences("players", MODE_PRIVATE).edit()
                     .putString("player1", p1).putString("player2", p2).apply();
@@ -55,13 +67,82 @@ public class UserRegistrationActivity extends AppCompatActivity {
 
             // Start BoardActivity
             Intent i = new Intent(UserRegistrationActivity.this, BoardActivity.class);
-            // optionally pass names:
+            // Pass player names and authentication status
             i.putExtra("player1", p1);
             i.putExtra("player2", p2);
-            i.putExtra("color",playerColor);
+            i.putExtra("color", playerColor);
+            i.putExtra("isPlayer1Registered", authManager.isLoggedIn());
             startActivity(i);
             finish();
         });
+    }
+
+    /**
+     * Sets up the Player 1 name field based on authentication status.
+     * If user is logged in, disables the field and auto-populates with username.
+     */
+    private void setupPlayer1Field() {
+        if (authManager.isLoggedIn()) {
+            // User is logged in - auto-populate and disable Player 1 field
+            String currentUsername = authManager.getCurrentUsername();
+            etPlayer1Name.setText(currentUsername);
+            etPlayer1Name.setEnabled(false);
+            etPlayer1Name.setFocusable(false);
+            etPlayer1Name.setClickable(false);
+            etPlayer1Name.setHint("Logged in as: " + currentUsername);
+            
+            // Update the hint color to indicate it's disabled
+            etPlayer1Name.setTextColor(getResources().getColor(android.R.color.white));
+            etPlayer1Name.setAlpha(0.7f); // Make it slightly transparent to show it's disabled
+        } else {
+            // User is not logged in - enable normal input
+            etPlayer1Name.setEnabled(true);
+            etPlayer1Name.setFocusable(true);
+            etPlayer1Name.setClickable(true);
+            etPlayer1Name.setHint("Enter Player 1 Name");
+            etPlayer1Name.setAlpha(1.0f);
+        }
+    }
+
+    /**
+     * Validates user inputs before starting the game.
+     * 
+     * @return true if inputs are valid, false otherwise
+     */
+    private boolean validateInputs() {
+        String p1 = etPlayer1Name.getText().toString().trim();
+        String p2 = etPlayer2Name.getText().toString().trim();
+
+        // Validate Player 1 name
+        if (p1.isEmpty()) {
+            Toast.makeText(this, "Player 1 name cannot be empty", Toast.LENGTH_SHORT).show();
+            if (etPlayer1Name.isEnabled()) {
+                etPlayer1Name.requestFocus();
+            }
+            return false;
+        }
+
+        // Validate Player 2 name
+        if (p2.isEmpty()) {
+            Toast.makeText(this, "Player 2 name cannot be empty", Toast.LENGTH_SHORT).show();
+            etPlayer2Name.requestFocus();
+            return false;
+        }
+
+        // Check if both players have the same name
+        if (p1.equalsIgnoreCase(p2)) {
+            Toast.makeText(this, "Player names must be different", Toast.LENGTH_SHORT).show();
+            etPlayer2Name.requestFocus();
+            return false;
+        }
+
+        // Validate color selection
+        if (radioGroupColor.getCheckedRadioButtonId() == -1) {
+            Toast.makeText(this, "Please select a color for Player 1", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     // --- THIS IS THE METHOD YOU ARE MISSING ---
