@@ -35,7 +35,8 @@
             android:textColor="#FFD700"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:fontFamily="sans-serif-medium" />
+            android:fontFamily="@font/cinzel_decorative"
+            />
 
     </androidx.appcompat.widget.Toolbar>
 
