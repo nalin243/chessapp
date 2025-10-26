@@ -58,6 +58,10 @@ public class BoardActivity extends AppCompatActivity {
             }
             public void onFinish() {
                 Toast.makeText(BoardActivity.this, "White's time over! Black wins!", Toast.LENGTH_LONG).show();
+                //****ADD CODE TO ADD WINNER TO DATABASE****
+                //playerWhiteName and playerBlackName are there
+                Intent i = new Intent(BoardActivity.this, MainActivity.class);
+                startActivity(i);
             }
         }.start();
     }
@@ -71,6 +75,10 @@ public class BoardActivity extends AppCompatActivity {
             }
             public void onFinish() {
                 Toast.makeText(BoardActivity.this, "Black's time over! White wins!", Toast.LENGTH_LONG).show();
+                //****ADD CODE TO ADD WINNER TO DATABASE****
+                //playerWhiteName and playerBlackName are there
+                Intent i = new Intent(BoardActivity.this, MainActivity.class);
+                startActivity(i);
             }
         }.start();
     }
