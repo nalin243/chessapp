@@ -5,17 +5,23 @@
     android:layout_margin="8dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="10dp"
+    android:padding="12dp"
     android:background="@drawable/leaderboard_item_bg">
 
-    <!-- White pawn icon (left) -->
-    <ImageView
+    <!-- Rank number -->
+    <TextView
+        android:id="@+id/textRank"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/white_pawn"
-        android:contentDescription="White Player" />
+        android:text="1"
+        android:textColor="#FFD700"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:background="@drawable/white_pawn"
+        android:contentDescription="Player Rank" />
 
-    <!-- Match text -->
+    <!-- Player info -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -24,27 +30,29 @@
         android:paddingHorizontal="12dp">
 
         <TextView
-            android:id="@+id/textMatchTitle"
+            android:id="@+id/textUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Player White Against Player Black"
+            android:text="Player Name"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:fontFamily="sans-serif-medium" />
 
         <TextView
-            android:id="@+id/textMatchTime"
+            android:id="@+id/textStats"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Time: 30:00 mins"
+            android:text="Wins: 0 | Time: 0:00"
             android:textColor="#B0B0B0"
             android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- Black pawn icon (right) -->
+    <!-- Trophy icon for top players -->
     <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/black_pawn"
-        android:contentDescription="Black Player" />
+        android:id="@+id/imageTrophy"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/white_king"
+        android:contentDescription="Trophy"
+        android:visibility="gone" />
 </LinearLayout>
